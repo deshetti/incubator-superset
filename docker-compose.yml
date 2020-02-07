@@ -79,10 +79,22 @@ services:
     depends_on: *superset-depends-on
     volumes: *superset-volumes
 
+  dremio:
+    image: dremio/dremio-oss:4.1.4
+    restart: unless-stopped
+    ports:
+      - "9047:9047"
+      - "31010:31010"
+      - "45678:45678"
+    volumes:
+      - dremio:/opt/dremio/data dremio/dremio-oss
+
 volumes:
   superset_home:
     external: false
   db_home:
     external: false
   redis:
+    external: false
+  dremio:
     external: false
