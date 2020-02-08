@@ -6,7 +6,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
 fi
 
 # domains=(factly.org www.factly.org superset.factly.org www.superset.factly.org dremio.factly.org www.dremio.factly.org)
-domains=(factly.org www.factly.org superset.factly.org www.superset.factly.org dremio.factly.org www.dremio.factly.org)
+domains=(factly.org www.factly.org)
 rsa_key_size=4096
 data_path="./data/certbot"
 email="admin@factly.in" # Adding a valid address is strongly recommended
