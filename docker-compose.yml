@@ -14,80 +14,80 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-x-superset-build: &superset-build
-  context: ./
-  dockerfile: Dockerfile
-  target: dev
-x-superset-depends-on: &superset-depends-on
-  - db
-  - redis
-x-superset-volumes: &superset-volumes
-  # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
-  - ./docker/docker-init.sh:/app/docker-init.sh
-  - ./docker/pythonpath_dev:/app/pythonpath
-  - ./superset:/app/superset
-  - superset_home:/app/superset_home
+# x-superset-build: &superset-build
+#   context: ./
+#   dockerfile: Dockerfile
+#   target: dev
+# x-superset-depends-on: &superset-depends-on
+#   - db
+#   - redis
+# x-superset-volumes: &superset-volumes
+#   # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
+#   - ./docker/docker-init.sh:/app/docker-init.sh
+#   - ./docker/pythonpath_dev:/app/pythonpath
+#   - ./superset:/app/superset
+#   - superset_home:/app/superset_home
 
 version: "3.7"
 services:
-  redis:
-    image: redis:3.2
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:6379:6379"
-    volumes:
-      - redis:/data
+  # redis:
+  #   image: redis:3.2
+  #   restart: unless-stopped
+  #   ports:
+  #     - "127.0.0.1:6379:6379"
+  #   volumes:
+  #     - redis:/data
 
-  db:
-    env_file: docker/.env
-    image: postgres:10
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:5432:5432"
-    volumes:
-      - db_home:/var/lib/postgresql/data
+  # db:
+  #   env_file: docker/.env
+  #   image: postgres:10
+  #   restart: unless-stopped
+  #   ports:
+  #     - "127.0.0.1:5432:5432"
+  #   volumes:
+  #     - db_home:/var/lib/postgresql/data
 
-  superset:
-    build: *superset-build
-    command: ["flask", "run", "-p", "8088", "--with-threads", "--reload", "--debugger", "--host=0.0.0.0"]
-    env_file: docker/.env
-    restart: unless-stopped
-    ports:
-      - 8088:8088
-    depends_on: *superset-depends-on
-    volumes: *superset-volumes
+  # superset:
+  #   build: *superset-build
+  #   command: ["flask", "run", "-p", "8088", "--with-threads", "--reload", "--debugger", "--host=0.0.0.0"]
+  #   env_file: docker/.env
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8088:8088
+  #   depends_on: *superset-depends-on
+  #   volumes: *superset-volumes
 
-  superset-init:
-    build: *superset-build
-    command: ["/app/docker-init.sh"]
-    env_file: docker/.env
-    depends_on: *superset-depends-on
-    volumes: *superset-volumes
+  # superset-init:
+  #   build: *superset-build
+  #   command: ["/app/docker-init.sh"]
+  #   env_file: docker/.env
+  #   depends_on: *superset-depends-on
+  #   volumes: *superset-volumes
 
-  superset-node:
-    image: node:10-jessie
-    command: ["bash", "-c", "cd /app/superset/assets && npm install && npm run dev"]
-    env_file: docker/.env
-    depends_on: *superset-depends-on
-    volumes: *superset-volumes
+  # superset-node:
+  #   image: node:10-jessie
+  #   command: ["bash", "-c", "cd /app/superset/assets && npm install && npm run dev"]
+  #   env_file: docker/.env
+  #   depends_on: *superset-depends-on
+  #   volumes: *superset-volumes
 
-  superset-worker:
-    build: *superset-build
-    command: ["celery", "worker", "--app=superset.tasks.celery_app:app", "-Ofair"]
-    env_file: docker/.env
-    restart: unless-stopped
-    depends_on: *superset-depends-on
-    volumes: *superset-volumes
+  # superset-worker:
+  #   build: *superset-build
+  #   command: ["celery", "worker", "--app=superset.tasks.celery_app:app", "-Ofair"]
+  #   env_file: docker/.env
+  #   restart: unless-stopped
+  #   depends_on: *superset-depends-on
+  #   volumes: *superset-volumes
 
-  dremio:
-    image: dremio/dremio-oss:4.1.4
-    restart: unless-stopped
-    ports:
-      - "9047:9047"
-      - "31010:31010"
-      - "45678:45678"
-    volumes:
-      - dremio:/opt/dremio/data dremio/dremio-oss
+  # dremio:
+  #   image: dremio/dremio-oss:4.1.4
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9047:9047"
+  #     - "31010:31010"
+  #     - "45678:45678"
+  #   volumes:
+  #     - dremio:/opt/dremio/data dremio/dremio-oss
 
   nginx:
     image: nginx:1.15-alpine
@@ -109,12 +109,12 @@ services:
       - ./data/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
-volumes:
-  superset_home:
-    external: false
-  db_home:
-    external: false
-  redis:
-    external: false
-  dremio:
-    external: false
+# volumes:
+#   superset_home:
+#     external: false
+#   db_home:
+#     external: false
+#   redis:
+#     external: false
+#   dremio:
+#     external: false
